@@ -34,7 +34,7 @@ jobs:
 
       - name: List targets
         id: list-targets
-        uses: suzuki-shunsuke/tfaction/list-targets@main
+        uses: suzuki-shunsuke/tfaction/list-targets@v1.20.1
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
 
@@ -72,16 +72,16 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Setup tfaction
-        uses: suzuki-shunsuke/tfaction/setup@main
+        uses: suzuki-shunsuke/tfaction/setup@v1.20.1
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
 
       - name: Test
-        uses: suzuki-shunsuke/tfaction/test@main
+        uses: suzuki-shunsuke/tfaction/test@v1.20.1
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
 
       - name: Plan
-        uses: suzuki-shunsuke/tfaction/plan@main
+        uses: suzuki-shunsuke/tfaction/plan@v1.20.1
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
