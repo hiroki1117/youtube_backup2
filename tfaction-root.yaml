@@ -2,6 +2,8 @@
 # https://suzuki-shunsuke.github.io/tfaction/docs/config
 
 ---
+plan_workflow_name: tfaction plan # Must match the workflow name in .github/workflows/tfaction-plan.yml
+
 target_groups:
   - working_directory: infra/aws # AWS infrastructure
     target: infra/aws
