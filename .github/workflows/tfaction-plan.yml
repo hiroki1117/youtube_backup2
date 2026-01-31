@@ -48,7 +48,9 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.setup.outputs.targets) }}
     env:
-      TFACTION_TARGET: ${{ matrix.target }}
+      TFACTION_TARGET: ${{ matrix.target.target }}
+      TFACTION_WORKING_DIR: ${{ matrix.target.working_directory }}
+      TFACTION_JOB_TYPE: ${{ matrix.target.job_type }}
       TFACTION_IS_APPLY: "false"
     steps:
       - name: Generate token
