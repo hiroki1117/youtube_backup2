@@ -4,22 +4,25 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'infra/**'
-      - '.github/workflows/tfaction-*.yml'
-      - 'tfaction-root.yaml'
-      - 'aqua/aqua.yaml'
 
 permissions:
-  contents: read
   id-token: write
+  contents: read
   pull-requests: write
 
 jobs:
-  plan:
+  setup:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    outputs:
+      targets: ${{ steps.list-targets.outputs.targets }}
     steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.TFACTION_GITHUB_APP_ID }}
+          private_key: ${{ secrets.TFACTION_GITHUB_APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -29,8 +32,38 @@ jobs:
           aqua_version: v2.36.1
           working_directory: aqua
 
-      - name: Setup Terraform
-        run: terraform version
+      - name: List targets
+        id: list-targets
+        uses: suzuki-shunsuke/tfaction/list-targets@main
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+
+  plan:
+    needs: setup
+    if: "join(fromJSON(needs.setup.outputs.targets), '') != ''"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: ${{ fromJSON(needs.setup.outputs.targets) }}
+    env:
+      TFACTION_TARGET: ${{ matrix.target }}
+      TFACTION_IS_APPLY: "false"
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.TFACTION_GITHUB_APP_ID }}
+          private_key: ${{ secrets.TFACTION_GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup aqua
+        uses: aquaproj/aqua-installer@v3.0.1
+        with:
+          aqua_version: v2.36.1
+          working_directory: aqua
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -38,25 +71,17 @@ jobs:
           role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
           aws-region: ap-northeast-1
 
-      - name: tfaction list
-        id: list
-        run: |
-          tfaction list --changed | tee changed_targets.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: tfaction plan
-        run: |
-          while IFS= read -r target; do
-            echo "Planning: $target"
-            tfaction plan --working-directory "$target"
-          done < changed_targets.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_REGION: ap-northeast-1
-
-      - name: Comment PR
-        if: always()
-        uses: suzuki-shunsuke/tfaction/post-plan@v7.6.1
+      - name: Setup tfaction
+        uses: suzuki-shunsuke/tfaction/setup@main
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Test
+        uses: suzuki-shunsuke/tfaction/test@main
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Plan
+        uses: suzuki-shunsuke/tfaction/plan@main
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
