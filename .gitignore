@@ -14,3 +14,4 @@ changed_targets.txt
 # aqua
 .aqua/
 aqua-checksums.json
+**/.envrc
