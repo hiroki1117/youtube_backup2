@@ -33,53 +33,34 @@ resource "aws_dynamodb_table" "youtube_backup_table" {
 
 # AWS Backup設定
 resource "aws_backup_vault" "vault" {
-  name = "youtube-backup-vault"
+  name = "YoutubeBackupVault"
 }
 
 resource "aws_backup_plan" "plan" {
-  name = "youtube-backup-plan"
-
+  name = "YoutubeBackupDynamoDBBackupPlan"
   rule {
-    rule_name         = "daily_backup"
+    rule_name         = "YoutubeBackupRule"
     target_vault_name = aws_backup_vault.vault.name
-    schedule          = "cron(0 3 * * ? *)"  # 毎日12:00 JST
-
+    schedule          = "cron(0 12 * * ? *)"
     lifecycle {
       delete_after = 35
     }
   }
 }
 
-data "aws_caller_identity" "current" {}
-
-resource "aws_iam_role" "BackupRole" {
-  name = "BackupRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "backup.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "backup_policy" {
-  role       = aws_iam_role.BackupRole.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
-}
-
 resource "aws_backup_selection" "selection" {
-  name         = "youtube-backup-selection"
+  iam_role_arn = data.aws_iam_role.BackupRole.arn
+  name         = "YoutubeBackupSelection"
   plan_id      = aws_backup_plan.plan.id
-  iam_role_arn = aws_iam_role.BackupRole.arn
-
   resources = [
     aws_dynamodb_table.youtube_backup_table.arn
   ]
+
+  # Objects have changed outside of Terraform対策
+  not_resources = []
+  condition {}
+}
+
+data "aws_iam_role" "BackupRole" {
+  name = "AWSBackupDefaultServiceRole"
 }

@@ -26,6 +26,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "youtubedl_bucket_lifecycle" {
     status = "Enabled"
 
     transition {
+      days          = 0
       storage_class = "INTELLIGENT_TIERING"
     }
   }
