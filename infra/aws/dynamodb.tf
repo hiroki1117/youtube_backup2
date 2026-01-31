@@ -1,8 +1,8 @@
 # DynamoDB Table
 resource "aws_dynamodb_table" "youtube_backup_table" {
-  name           = "YoutubeBackup"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "video_id"
+  name         = "YoutubeBackup"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "video_id"
 
   attribute {
     name = "video_id"
