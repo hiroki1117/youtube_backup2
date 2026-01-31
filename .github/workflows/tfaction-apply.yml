@@ -1,7 +1,9 @@
 name: tfaction apply
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
   workflow_dispatch:
@@ -13,6 +15,7 @@ permissions:
 
 jobs:
   setup:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
       targets: ${{ steps.list-targets.outputs.targets }}
