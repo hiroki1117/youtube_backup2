@@ -56,8 +56,6 @@ resource "aws_iam_role_policy" "github_actions_iam_limited" {
         Action = [
           "iam:CreateRole",
           "iam:DeleteRole",
-          "iam:GetRole",
-          "iam:ListRoles",
           "iam:UpdateRole",
           "iam:TagRole",
           "iam:UntagRole",
@@ -65,9 +63,6 @@ resource "aws_iam_role_policy" "github_actions_iam_limited" {
           "iam:DetachRolePolicy",
           "iam:PutRolePolicy",
           "iam:DeleteRolePolicy",
-          "iam:GetRolePolicy",
-          "iam:ListRolePolicies",
-          "iam:ListAttachedRolePolicies",
           "iam:PassRole"
         ]
         Resource = "arn:aws:iam::*:role/youtube-backup2-*"
@@ -75,23 +70,15 @@ resource "aws_iam_role_policy" "github_actions_iam_limited" {
       {
         Effect = "Allow"
         Action = [
-          "iam:GetRole"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
+          "iam:GetRole",
+          "iam:ListRoles",
+          "iam:GetRolePolicy",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
           "iam:GetPolicy",
           "iam:GetPolicyVersion",
           "iam:ListPolicies",
-          "iam:ListPolicyVersions"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
+          "iam:ListPolicyVersions",
           "iam:ListOpenIDConnectProviders",
           "iam:GetOpenIDConnectProvider"
         ]
