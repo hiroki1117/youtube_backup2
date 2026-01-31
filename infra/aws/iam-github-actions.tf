@@ -77,7 +77,7 @@ resource "aws_iam_role_policy" "github_actions_iam_limited" {
         Action = [
           "iam:GetRole"
         ]
-        Resource = "arn:aws:iam::*:role/AWSBackupDefaultServiceRole"
+        Resource = "*"
       },
       {
         Effect = "Allow"
