@@ -1,0 +1,62 @@
+name: tfaction plan
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'infra/**'
+      - '.github/workflows/tfaction-*.yml'
+      - 'tfaction-root.yaml'
+      - 'aqua/aqua.yaml'
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup aqua
+        uses: aquaproj/aqua-installer@v3.0.1
+        with:
+          aqua_version: v2.36.1
+          working_directory: aqua
+
+      - name: Setup Terraform
+        run: terraform version
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ap-northeast-1
+
+      - name: tfaction list
+        id: list
+        run: |
+          tfaction list --changed | tee changed_targets.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: tfaction plan
+        run: |
+          while IFS= read -r target; do
+            echo "Planning: $target"
+            tfaction plan --working-directory "$target"
+          done < changed_targets.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_REGION: ap-northeast-1
+
+      - name: Comment PR
+        if: always()
+        uses: suzuki-shunsuke/tfaction/post-plan@v7.6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,12 @@
+# tfaction working directory configuration for AWS
+# https://suzuki-shunsuke.github.io/tfaction/docs/config
+
+---
+aws_region: ap-northeast-1
+
+# GitHub Actions OIDC role for AWS access
+aws_assume_role_arn: arn:aws:iam::103933412310:role/GitHubActionsOIDCRole
+
+terraform_plan_config:
+  s3_bucket_name: hiroki1117-tf-state
+  s3_bucket_key_prefix: youtube-backup2-plans/

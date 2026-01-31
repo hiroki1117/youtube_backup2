@@ -1,0 +1,22 @@
+# aqua - Declarative CLI Version Manager
+# https://aquaproj.github.io/
+---
+registries:
+  - type: standard
+    ref: v4.245.0 # renovate: depName=aquaproj/aqua-registry
+
+packages:
+  # Terraform
+  - name: hashicorp/terraform@v1.14.0
+
+  # tfaction - Terraform CI/CD framework
+  - name: suzuki-shunsuke/tfaction@v7.6.1
+
+  # tflint - Terraform linter
+  - name: terraform-linters/tflint@v0.56.2
+
+  # reviewdog - Automated code review tool
+  - name: reviewdog/reviewdog@v0.20.3
+
+  # GitHub CLI (optional but useful)
+  - name: cli/cli@v2.67.0

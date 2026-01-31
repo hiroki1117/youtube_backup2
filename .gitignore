@@ -5,3 +5,12 @@
 **/terraform.tfstate.backup
 **/*.tfplan
 **/terraform.tfvars
+**/.terraform-version
+
+# tfaction
+changed_targets.txt
+**/tfplan.json
+
+# aqua
+.aqua/
+aqua-checksums.json

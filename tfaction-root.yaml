@@ -1,0 +1,18 @@
+# tfaction root configuration
+# https://suzuki-shunsuke.github.io/tfaction/docs/config
+
+---
+target_groups:
+  - working_directory: infra/aws # AWS infrastructure
+    target: infra/aws
+    aws_region: ap-northeast-1
+    terraform_plan_config:
+      s3_bucket_name: hiroki1117-tf-state
+
+  # Future: GCP infrastructure
+  # - working_directory: infra/gcp
+  #   target: infra/gcp
+
+base_working_directory: .
+terraform_command: terraform
+tflint_enabled: true
