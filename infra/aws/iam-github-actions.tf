@@ -75,10 +75,25 @@ resource "aws_iam_role_policy" "github_actions_iam_limited" {
       {
         Effect = "Allow"
         Action = [
+          "iam:GetRole"
+        ]
+        Resource = "arn:aws:iam::*:role/AWSBackupDefaultServiceRole"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "iam:GetPolicy",
           "iam:GetPolicyVersion",
           "iam:ListPolicies",
           "iam:ListPolicyVersions"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:ListOpenIDConnectProviders",
+          "iam:GetOpenIDConnectProvider"
         ]
         Resource = "*"
       }
