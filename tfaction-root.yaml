@@ -18,3 +18,7 @@ target_groups:
 base_working_directory: .
 terraform_command: terraform
 tflint_enabled: true
+
+# Disable trivy for now (not installed in aqua)
+trivy:
+  enabled: false
