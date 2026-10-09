@@ -9,9 +9,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "hiroki1117-tf-state"
-    key    = "youtube-backup2" # 新しいキー（旧: youtube-dl）
-    region = "ap-northeast-1"
+    bucket       = "hiroki1117-tf-state"
+    key          = "youtube-backup2" # 新しいキー（旧: youtube-dl）
+    region       = "ap-northeast-1"
+    use_lockfile = true
   }
 }
 
