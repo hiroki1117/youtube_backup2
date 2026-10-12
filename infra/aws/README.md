@@ -1,5 +1,8 @@
 # YouTube Backup Infrastructure
 
+> [!IMPORTANT]
+> この配置は更新停止・履歴参照用です。基盤は [hiroki1117/infra の youtube-backup/prod](https://github.com/hiroki1117/infra/tree/main/youtube-backup/prod) へ移管済みです。以下の旧セットアップ手順は実行せず、Terraformと旧plan/apply CIを再開しないでください。[repo README](../../README.md)を参照してください。
+
 ## 概要
 
 YouTube動画バックアップシステムのAWSインフラ構成です。
